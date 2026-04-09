@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>CRUD con Bootstrap</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body >
+
+
+<header>
+
+    <nav class="navbar navbar-expand-lg bg-body-tertiary">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">Happykids</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                <a class="nav-link active" aria-current="page" href="empleado.html">Empleados</a>
+                </li>
+                <li class="nav-item">
+                <a class="nav-link" href="inventario.html">Inventario</a>
+                </li>
+                <li class="nav-item">
+                <a class="nav-link" href="inicioDeSesion.html">Inicio de sesión</a>
+                </li>
+                <li class="nav-item">
+                <a class="nav-link" href="index.html">Registrarse</a>
+                </li>
+            </ul>
+            </div>
+        </div>
+    </nav>
+  </header>
+
+<main class="bg-light min-vh-100 d-flex">
+<div class="container mt-5">
+  <h2 class="text-center mb-4">Inventario</h2>
+
+
+  <!-- Formulario -->
+  <form id="formulario" class="card p-4 shadow-sm">
+    <input type="hidden" id="id">
+
+    <div class="mb-3">
+      <label class="form-label">Nombre del producto</label>
+      <input type="text" id="nombres" class="form-control" required>
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Cantidad</label>
+      <input type="text" id="cantidad" class="form-control" required>
+    </div>
+
+    
+    <div class="mb-3">
+      <label class="form-label">Codigo de referencia</label>
+      <input type="text" id="codigo" class="form-control" required>
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Talla</label>
+      <input type="text" id="talla" class="form-control" required>
+    </div>
+
+        <div class="mb-3">
+        <label class="form-label">Color</label>
+        <input type="text" id="color" class="form-control" required>
+      </div>
+
+
+    <button type="submit" class="btn btn-primary">Guardar</button>
+  </form>
+
+  <!-- Tabla -->
+  <table class="table table-striped mt-4">
+    <thead class="table-dark">
+      <tr>
+        <th>Nombre del producto</th>
+        <th>Cantidad</th>
+        <th>Codigo de referencia</th>
+        <th>Talla</th>
+        <th>Color</th>  
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody id="tabla"></tbody>
+  </table>
+</div>
+
+<script>
+let datos = [];
+
+const formulario = document.getElementById('formulario');
+const tabla = document.getElementById('tabla');
+
+formulario.addEventListener('submit', function(e) {
+  e.preventDefault();
+
+  const id = document.getElementById('id').value;
+  const nombres = document.getElementById('nombres').value;
+  const cantidad = document.getElementById('cantidad').value;
+  const codigo = document.getElementById('codigo').value;
+  const talla = document.getElementById('talla').value;
+  const color = document.getElementById('color').value;
+
+  if (id) {
+    // Editar
+    datos = datos.map(item => item.id == id ? { id, nombres, cantidad, codigo, talla, color } : item);
+  } else {
+    // Crear
+    datos.push({
+      id: Date.now(),
+      nombres,
+      cantidad,
+      codigo,
+      talla,
+      color
+    });
+  }
+
+  formulario.reset();
+  document.getElementById('id').value = '';
+  mostrarDatos();
+});
+
+function mostrarDatos() {
+  tabla.innerHTML = '';
+  datos.forEach(item => {
+    tabla.innerHTML += `
+      <tr>
+        <td>${item.nombres}</td>
+        <td>${item.cantidad}</td>
+        <td>${item.codigo}</td>
+        <td>${item.talla}</td>
+        <td>${item.color}</td>
+
+        <td>
+          <button class="btn btn-warning btn-sm" onclick="editar(${item.id})">Editar</button>
+          <button class="btn btn-danger btn-sm" onclick="eliminar(${item.id})">Eliminar</button>
+        </td>
+      </tr>
+    `;
+  });
+}
+
+function editar(id) {
+  const item = datos.find(d => d.id == id);
+  document.getElementById('id').value = item.id;
+  document.getElementById('nombres').value = item.nombres;
+  document.getElementById('cantidad').value = item.cantidad;
+  document.getElementById('codigo').value = item.codigo;
+  document.getElementById('talla').value = item.talla;
+  document.getElementById('color').value = item.color;
+}
+
+function eliminar(id) {
+  datos = datos.filter(d => d.id != id);
+  mostrarDatos();
+}
+</script>
+</main>
+</body>
+</html>

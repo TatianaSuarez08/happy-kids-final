@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>CRUD con Bootstrap</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body >
+
+
+<header>
+
+    <nav class="navbar navbar-expand-lg bg-body-tertiary">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">Happykids</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                <a class="nav-link active" aria-current="page" href="empleado.html">Empleados</a>
+                </li>
+                <li class="nav-item">
+                <a class="nav-link" href="inventario.html">Inventario</a>
+                </li>
+                <li class="nav-item">
+                <a class="nav-link" href="inicioDeSesion.html">Inicio de sesión</a>
+                </li>
+                <li class="nav-item">
+                <a class="nav-link" href="index.html">Registrarse</a>
+                </li>
+            </ul>
+            </div>
+        </div>
+    </nav>
+  </header>
+
+<main class="bg-light min-vh-100 d-flex justify-content-center align-items-start">
+<div class="container mt-5">
+
+  <h2 class="text-center mb-4">Empleados</h2>
+
+  <!-- FORMULARIO -->
+  <form id="formulario" class="card p-4 shadow mb-4">
+    <input type="hidden" id="id">
+
+    <div class="row">
+      <div class="col-md-6 mb-3">
+        <label>Nombres</label>
+        <input type="text" id="nombres" class="form-control" required>
+      </div>
+
+      <div class="col-md-6 mb-3">
+        <label>Apellidos</label>
+        <input type="text" id="apellidos" class="form-control" required>
+      </div>
+
+      <div class="col-md-6 mb-3">
+        <label>Cargo</label>
+        <input type="text" id="cargo" class="form-control" required>
+      </div>
+
+      <div class="col-md-6 mb-3">
+        <label>Teléfono</label>
+        <input type="tel" id="telefono" class="form-control" required>
+      </div>
+
+      <div class="col-md-12 mb-3">
+        <label>Correo</label>
+        <input type="email" id="correo" class="form-control" required>
+      </div>
+    </div>
+
+    <button type="submit" class="btn btn-success w-100">Guardar empleado</button>
+  </form>
+
+  <!-- TABLA -->
+  <div class="card shadow">
+    <div class="card-body">
+
+      <table class="table table-hover">
+        <thead class="table-dark">
+          <tr>
+            <th>Nombres</th>
+            <th>Apellidos</th>
+            <th>Cargo</th>
+            <th>Teléfono</th>
+            <th>Correo</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+
+        <tbody id="tabla"></tbody>
+      </table>
+
+      <p id="vacio" class="text-center text-muted">No hay empleados registrados</p>
+
+    </div>
+  </div>
+
+</div>
+</main>
+
+<script>
+let datos = JSON.parse(localStorage.getItem("empleados")) || [];
+
+const formulario = document.getElementById('formulario');
+const tabla = document.getElementById('tabla');
+const vacio = document.getElementById('vacio');
+
+formulario.addEventListener('submit', function(e) {
+  e.preventDefault();
+
+  const id = document.getElementById('id').value;
+  const nombres = document.getElementById('nombres').value.trim();
+  const apellidos = document.getElementById('apellidos').value.trim();
+  const cargo = document.getElementById('cargo').value.trim();
+  const telefono = document.getElementById('telefono').value.trim();
+  const correo = document.getElementById('correo').value.trim();
+
+  if (!nombres || !apellidos || !cargo || !telefono || !correo) {
+    alert("Completa todos los campos");
+    return;
+  }
+
+  if (id) {
+    datos = datos.map(item =>
+      item.id == id ? { id, nombres, apellidos, cargo, telefono, correo } : item
+    );
+  } else {
+    datos.push({
+      id: Date.now(),
+      nombres,
+      apellidos,
+      cargo,
+      telefono,
+      correo
+    });
+  }
+
+  localStorage.setItem("empleados", JSON.stringify(datos));
+
+  formulario.reset();
+  document.getElementById('id').value = '';
+  mostrarDatos();
+});
+
+function mostrarDatos() {
+  tabla.innerHTML = '';
+
+  if (datos.length === 0) {
+    vacio.style.display = "block";
+    return;
+  } else {
+    vacio.style.display = "none";
+  }
+
+  datos.forEach(item => {
+    tabla.innerHTML += `
+      <tr>
+        <td>${item.nombres}</td>
+        <td>${item.apellidos}</td>
+        <td>${item.cargo}</td>
+        <td>${item.telefono}</td>
+        <td>${item.correo}</td>
+
+        <td>
+          <button class="btn btn-warning btn-sm me-2" onclick="editar(${item.id})">✏️</button>
+          <button class="btn btn-danger btn-sm" onclick="eliminar(${item.id})">🗑️</button>
+        </td>
+      </tr>
+    `;
+  });
+}
+
+function editar(id) {
+  const item = datos.find(d => d.id == id);
+
+  document.getElementById('id').value = item.id;
+  document.getElementById('nombres').value = item.nombres;
+  document.getElementById('apellidos').value = item.apellidos;
+  document.getElementById('cargo').value = item.cargo;
+  document.getElementById('telefono').value = item.telefono;
+  document.getElementById('correo').value = item.correo;
+}
+
+function eliminar(id) {
+  if (confirm("¿Eliminar este empleado?")) {
+    datos = datos.filter(d => d.id != id);
+    localStorage.setItem("empleados", JSON.stringify(datos));
+    mostrarDatos();
+  }
+}
+
+mostrarDatos();
+</script>

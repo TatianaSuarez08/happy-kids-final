@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="es-Co">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+
+  <!-- esto son los links para los archivos -->
+  <link rel="stylesheet" href="style.css">
+  <script src="script.js"></script>
+
+
+  <!--bootstrap links para el css y el js-->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+
+
+</head>
+<body >
+
+<header>
+
+    <nav class="navbar navbar-expand-lg bg-body-tertiary">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="#">Happykids</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav">
+        <li class="nav-item">
+          <a class="nav-link active" aria-current="page" href="empleado.html">Empleados</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="inventario.html">Inventario</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="inicioDeSesion.html">Inicio de sesión</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="index.html">Registrarse</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+  </header>
+ <main class="bg-light min-vh-100 d-flex justify-content-center align-items-center"> 
+  <div class="container">
+
+    <div class="card p-4 shadow" style="max-width: 700px; margin:auto;">
+
+      <div class="d-flex justify-content-end">
+        <button type="button" class="btn-close"></button>
+      </div>
+
+      <h2 class="text-center mb-4">Registrar Usuario</h2>
+
+      <form id="formulario" class="row g-3">
+
+        <div class="col-md-6">
+          <label class="form-label">Nombres</label>
+          <input type="text" id="nombres" class="form-control" required>
+        </div>
+
+        <div class="col-md-6">
+          <label class="form-label">Apellido</label>
+          <input type="text" id="apellido" class="form-control" required>
+        </div>
+
+        <div class="col-md-6">
+          <label class="form-label">Usuario</label>
+          <div class="input-group">
+            <span class="input-group-text">@</span>
+            <input type="text" id="usuario" class="form-control" required>
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <label class="form-label">Correo</label>
+          <input type="email" id="correo" class="form-control" required>
+        </div>
+
+        <div class="col-md-6">
+          <label class="form-label">Contraseña</label>
+          <input type="password" id="password" class="form-control" required>
+        </div>
+
+        <div class="col-md-6">
+          <label class="form-label">Confirmar contraseña</label>
+          <input type="password" id="confirmar" class="form-control" required>
+        </div>
+
+        <div class="col-12">
+          <div class="form-check">
+            <input class="form-check-input" type="checkbox" id="terminos" required>
+            <label class="form-check-label">
+              Aceptar términos y condiciones
+            </label>
+          </div>
+        </div>
+
+        <button type="submit" class="btn btn-success w-100">
+          Registrarse
+        </button>
+
+      </form>
+
+    </div>
+  </div>
+</main>
+
+<script>
+const form = document.getElementById("formulario");
+
+form.addEventListener("submit", function(e) {
+  e.preventDefault();
+
+  const password = document.getElementById("password").value;
+  const confirmar = document.getElementById("confirmar").value;
+
+  if (password !== confirmar) {
+    alert("Las contraseñas no coinciden ❌");
+    return;
+  }
+
+  alert("Usuario registrado correctamente ✅");
+
+  form.reset();
+});
+</script>

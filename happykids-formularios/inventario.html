@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>CRUD Inventario</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body>
+
+<header>
+  <nav class="navbar navbar-expand-lg bg-dark navbar-dark">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="#">Happykids</a>
+    </div>
+  </nav>
+</header>
+
+<main class="bg-light min-vh-100 d-flex justify-content-center align-items-start">
+
+<div class="container mt-5">
+
+  <h2 class="text-center mb-4">Inventario</h2>
+
+  <!-- FORMULARIO -->
+  <form id="formulario" class="card p-4 shadow mb-4">
+    <input type="hidden" id="id">
+
+    <div class="row">
+      <div class="col-md-6 mb-3">
+        <label>Producto</label>
+        <input type="text" id="nombres" class="form-control" placeholder="Ej: Camiseta" required>
+      </div>
+
+      <div class="col-md-6 mb-3">
+        <label>Cantidad</label>
+        <input type="number" id="cantidad" class="form-control" required>
+      </div>
+
+      <div class="col-md-6 mb-3">
+        <label>Código</label>
+        <input type="text" id="codigo" class="form-control" required>
+      </div>
+
+      <div class="col-md-3 mb-3">
+        <label>Talla</label>
+        <input type="text" id="talla" class="form-control">
+      </div>
+
+      <div class="col-md-3 mb-3">
+        <label>Color</label>
+        <input type="text" id="color" class="form-control">
+      </div>
+    </div>
+
+    <button type="submit" class="btn btn-success w-100">Guardar producto</button>
+  </form>
+
+  <!-- TABLA -->
+  <div class="card shadow">
+    <div class="card-body">
+
+      <table class="table table-hover">
+        <thead class="table-dark">
+          <tr>
+            <th>Producto</th>
+            <th>Cantidad</th>
+            <th>Código</th>
+            <th>Talla</th>
+            <th>Color</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+
+        <tbody id="tabla"></tbody>
+      </table>
+
+      <p id="vacio" class="text-center text-muted">No hay productos registrados</p>
+
+    </div>
+  </div>
+
+</div>
+</main>
+
+<script>
+let datos = JSON.parse(localStorage.getItem("inventario")) || [];
+
+const formulario = document.getElementById('formulario');
+const tabla = document.getElementById('tabla');
+const vacio = document.getElementById('vacio');
+
+formulario.addEventListener('submit', function(e) {
+  e.preventDefault();
+
+  const id = document.getElementById('id').value;
+  const nombres = document.getElementById('nombres').value.trim();
+  const cantidad = document.getElementById('cantidad').value;
+  const codigo = document.getElementById('codigo').value.trim();
+  const talla = document.getElementById('talla').value;
+  const color = document.getElementById('color').value;
+
+  if (!nombres || !cantidad || !codigo) {
+    alert("Completa los campos obligatorios");
+    return;
+  }
+
+  if (id) {
+    datos = datos.map(item =>
+      item.id == id ? { id, nombres, cantidad, codigo, talla, color } : item
+    );
+  } else {
+    datos.push({
+      id: Date.now(),
+      nombres,
+      cantidad,
+      codigo,
+      talla,
+      color
+    });
+  }
+
+  localStorage.setItem("inventario", JSON.stringify(datos));
+
+  formulario.reset();
+  document.getElementById('id').value = '';
+  mostrarDatos();
+});
+
+function mostrarDatos() {
+  tabla.innerHTML = '';
+
+  if (datos.length === 0) {
+    vacio.style.display = "block";
+    return;
+  } else {
+    vacio.style.display = "none";
+  }
+
+  datos.forEach(item => {
+    tabla.innerHTML += `
+      <tr>
+        <td>${item.nombres}</td>
+        <td>${item.cantidad}</td>
+        <td>${item.codigo}</td>
+        <td>${item.talla}</td>
+        <td>${item.color}</td>
+
+        <td>
+          <button class="btn btn-warning btn-sm me-2" onclick="editar(${item.id})">✏️</button>
+          <button class="btn btn-danger btn-sm" onclick="eliminar(${item.id})">🗑️</button>
+        </td>
+      </tr>
+    `;
+  });
+}
+
+function editar(id) {
+  const item = datos.find(d => d.id == id);
+
+  document.getElementById('id').value = item.id;
+  document.getElementById('nombres').value = item.nombres;
+  document.getElementById('cantidad').value = item.cantidad;
+  document.getElementById('codigo').value = item.codigo;
+  document.getElementById('talla').value = item.talla;
+  document.getElementById('color').value = item.color;
+}
+
+function eliminar(id) {
+  if (confirm("¿Seguro que deseas eliminar este producto?")) {
+    datos = datos.filter(d => d.id != id);
+    localStorage.setItem("inventario", JSON.stringify(datos));
+    mostrarDatos();
+  }
+}
+
+mostrarDatos();
+</script>
+
+</body>
+</html>

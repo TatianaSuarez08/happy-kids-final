@@ -45,90 +45,87 @@
   </div>
 </nav>
   </header>
-  <main class="bg-light  min-vh-100 d-flex  "> 
-    <div class="container mt-5">
+ <main class="bg-light min-vh-100 d-flex justify-content-center align-items-center"> 
+  <div class="container">
 
-        <!-- Caja del formulario -->
-        <div class="card p-4 shadow">
+    <div class="card p-4 shadow" style="max-width: 700px; margin:auto;">
 
-            <!-- Botón cerrar -->
-            <div class="d-flex justify-content-end">
-                <button type="button" class="btn-close"></button>
-            </div>
-
-            <h2 class="text-center mb-4">Registrar Usuario</h2>
-
-            <form class="row g-3"  method="POST">
-
-                <div class="col-md-4">
-        <label for="validationCustom01" class="form-label">Nombres</label>
-        <input type="text" class="form-control" id="validationCustom01" value="Mark" >
-        <div class="valid-feedback">
-          Looks good!
-        </div>
+      <div class="d-flex justify-content-end">
+        <button type="button" class="btn-close"></button>
       </div>
-      <div class="col-md-4">
-        <label for="validationCustom02" class="form-label">Apellido</label>
-        <input type="text" class="form-control" id="validationCustom02" value="Otto" >
-        <div class="valid-feedback">
-          Looks good!
+
+      <h2 class="text-center mb-4">Registrar Usuario</h2>
+
+      <form id="formulario" class="row g-3">
+
+        <div class="col-md-6">
+          <label class="form-label">Nombres</label>
+          <input type="text" id="nombres" class="form-control" required>
         </div>
-      </div>
-      <div class="col-md-4">
-        <label for="validationCustomUsername" class="form-label">nombre de usuario</label>
-        <div class="input-group has-validation">
-          <span class="input-group-text" id="inputGroupPrepend">@</span>
-          <input type="text" class="form-control" id="validationCustomUsername" aria-describedby="inputGroupPrepend" >
-          <div class="invalid-feedback">
-            Please choose a nombre de usuario.
+
+        <div class="col-md-6">
+          <label class="form-label">Apellido</label>
+          <input type="text" id="apellido" class="form-control" required>
+        </div>
+
+        <div class="col-md-6">
+          <label class="form-label">Usuario</label>
+          <div class="input-group">
+            <span class="input-group-text">@</span>
+            <input type="text" id="usuario" class="form-control" required>
           </div>
         </div>
-      </div>
-      <div class="col-md-6">
-        <label for="validationCustom03" class="form-label">correo electrónico</label>
-        <input type="text" class="form-control" id="validationCustom03" >
-        <div class="invalid-feedback">
-          Please provide a valid correo electrónico.
+
+        <div class="col-md-6">
+          <label class="form-label">Correo</label>
+          <input type="email" id="correo" class="form-control" required>
         </div>
-      </div>
-     
-      <div class="col-md-3">
-        <label for="validationCustom05" class="form-label">contraseña</label>
-        <input type="text" class="form-control" id="validationCustom05" >
-        <div class="invalid-feedback">
-          Please provide a valid contraseña.
+
+        <div class="col-md-6">
+          <label class="form-label">Contraseña</label>
+          <input type="password" id="password" class="form-control" required>
         </div>
-      </div>
-      <div class="col-md-3">
-        <label for="validationCustom05" class="form-label">confirmar contraseña</label>
-        <input type="text" class="form-control" id="validationCustom05" >
-        <div class="invalid-feedback">
-          Please provide a valid confirmar contraseña.
+
+        <div class="col-md-6">
+          <label class="form-label">Confirmar contraseña</label>
+          <input type="password" id="confirmar" class="form-control" required>
         </div>
-      </div>
-      <div class="col-12">
-        <div class="form-check">
-          <input class="form-check-input" type="checkbox" value="" id="invalidCheck" >
-          <label class="form-check-label" for="invalidCheck">
-            aceptar los términos y condiciones
-          </label>
-          <div class="invalid-feedback">
-            aceptar los términos y condiciones antes de enviar el formulario.
+
+        <div class="col-12">
+          <div class="form-check">
+            <input class="form-check-input" type="checkbox" id="terminos" required>
+            <label class="form-check-label">
+              Aceptar términos y condiciones
+            </label>
           </div>
         </div>
-      </div>
 
-                <button type="submit" class="btn btn-primary w-100">
-                    Guardar
-                </button>
+        <button type="submit" class="btn btn-success w-100">
+          Registrarse
+        </button>
 
-            </form>
-
-        </div>
+      </form>
 
     </div>
-    </main>
-</body>
-  
+  </div>
+</main>
 
-</html>
+<script>
+const form = document.getElementById("formulario");
+
+form.addEventListener("submit", function(e) {
+  e.preventDefault();
+
+  const password = document.getElementById("password").value;
+  const confirmar = document.getElementById("confirmar").value;
+
+  if (password !== confirmar) {
+    alert("Las contraseñas no coinciden ❌");
+    return;
+  }
+
+  alert("Usuario registrado correctamente ✅");
+
+  form.reset();
+});
+</script>

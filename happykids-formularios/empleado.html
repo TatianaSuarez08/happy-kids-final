@@ -36,82 +36,99 @@
     </nav>
   </header>
 
-<main class="bg-light min-vh-100 d-flex">
+<main class="bg-light min-vh-100 d-flex justify-content-center align-items-start">
 <div class="container mt-5">
+
   <h2 class="text-center mb-4">Empleados</h2>
 
-
-  <!-- Formulario -->
-  <form id="formulario" class="card p-4 shadow-sm">
+  <!-- FORMULARIO -->
+  <form id="formulario" class="card p-4 shadow mb-4">
     <input type="hidden" id="id">
 
-    <div class="mb-3">
-      <label class="form-label">Nombres</label>
-      <input type="text" id="nombres" class="form-control" required>
-    </div>
-
-    <div class="mb-3">
-      <label class="form-label">Apellidos</label>
-      <input type="text" id="apellidos" class="form-control" required>
-    </div>
-
-    
-    <div class="mb-3">
-      <label class="form-label">Cargo</label>
-      <input type="text" id="cargo" class="form-control" required>
-    </div>
-
-    <div class="mb-3">
-      <label class="form-label">Telefono</label>
-      <input type="text" id="telefono" class="form-control" required>
-    </div>
-
-        <div class="mb-3">
-        <label class="form-label">Correo</label>
-        <input type="email" id="correo" class="form-control" required>
+    <div class="row">
+      <div class="col-md-6 mb-3">
+        <label>Nombres</label>
+        <input type="text" id="nombres" class="form-control" required>
       </div>
 
+      <div class="col-md-6 mb-3">
+        <label>Apellidos</label>
+        <input type="text" id="apellidos" class="form-control" required>
+      </div>
 
-    <button type="submit" class="btn btn-primary">Guardar</button>
+      <div class="col-md-6 mb-3">
+        <label>Cargo</label>
+        <input type="text" id="cargo" class="form-control" required>
+      </div>
+
+      <div class="col-md-6 mb-3">
+        <label>Teléfono</label>
+        <input type="tel" id="telefono" class="form-control" required>
+      </div>
+
+      <div class="col-md-12 mb-3">
+        <label>Correo</label>
+        <input type="email" id="correo" class="form-control" required>
+      </div>
+    </div>
+
+    <button type="submit" class="btn btn-success w-100">Guardar empleado</button>
   </form>
 
-  <!-- Tabla -->
-  <table class="table table-striped mt-4">
-    <thead class="table-dark">
-      <tr>
-        <th>Nombres</th>
-        <th>Apellidos</th>
-        <th>Cargo</th>
-        <th>Telefono</th>
-        <th>Correo</th>  
-        <th>Acciones</th>
-      </tr>
-    </thead>
-    <tbody id="tabla"></tbody>
-  </table>
+  <!-- TABLA -->
+  <div class="card shadow">
+    <div class="card-body">
+
+      <table class="table table-hover">
+        <thead class="table-dark">
+          <tr>
+            <th>Nombres</th>
+            <th>Apellidos</th>
+            <th>Cargo</th>
+            <th>Teléfono</th>
+            <th>Correo</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+
+        <tbody id="tabla"></tbody>
+      </table>
+
+      <p id="vacio" class="text-center text-muted">No hay empleados registrados</p>
+
+    </div>
+  </div>
+
 </div>
+</main>
 
 <script>
-let datos = [];
+let datos = JSON.parse(localStorage.getItem("empleados")) || [];
 
 const formulario = document.getElementById('formulario');
 const tabla = document.getElementById('tabla');
+const vacio = document.getElementById('vacio');
 
 formulario.addEventListener('submit', function(e) {
   e.preventDefault();
 
   const id = document.getElementById('id').value;
-  const nombres = document.getElementById('nombres').value;
-  const apellidos = document.getElementById('apellidos').value;
-  const cargo = document.getElementById('cargo').value;
-  const telefono = document.getElementById('telefono').value;
-  const correo = document.getElementById('correo').value;
+  const nombres = document.getElementById('nombres').value.trim();
+  const apellidos = document.getElementById('apellidos').value.trim();
+  const cargo = document.getElementById('cargo').value.trim();
+  const telefono = document.getElementById('telefono').value.trim();
+  const correo = document.getElementById('correo').value.trim();
+
+  if (!nombres || !apellidos || !cargo || !telefono || !correo) {
+    alert("Completa todos los campos");
+    return;
+  }
 
   if (id) {
-    // Editar
-    datos = datos.map(item => item.id == id ? { id, nombres, apellidos, cargo, telefono, correo } : item);
+    datos = datos.map(item =>
+      item.id == id ? { id, nombres, apellidos, cargo, telefono, correo } : item
+    );
   } else {
-    // Crear
     datos.push({
       id: Date.now(),
       nombres,
@@ -122,6 +139,8 @@ formulario.addEventListener('submit', function(e) {
     });
   }
 
+  localStorage.setItem("empleados", JSON.stringify(datos));
+
   formulario.reset();
   document.getElementById('id').value = '';
   mostrarDatos();
@@ -129,6 +148,14 @@ formulario.addEventListener('submit', function(e) {
 
 function mostrarDatos() {
   tabla.innerHTML = '';
+
+  if (datos.length === 0) {
+    vacio.style.display = "block";
+    return;
+  } else {
+    vacio.style.display = "none";
+  }
+
   datos.forEach(item => {
     tabla.innerHTML += `
       <tr>
@@ -139,8 +166,8 @@ function mostrarDatos() {
         <td>${item.correo}</td>
 
         <td>
-          <button class="btn btn-warning btn-sm" onclick="editar(${item.id})">Editar</button>
-          <button class="btn btn-danger btn-sm" onclick="eliminar(${item.id})">Eliminar</button>
+          <button class="btn btn-warning btn-sm me-2" onclick="editar(${item.id})">✏️</button>
+          <button class="btn btn-danger btn-sm" onclick="eliminar(${item.id})">🗑️</button>
         </td>
       </tr>
     `;
@@ -149,6 +176,7 @@ function mostrarDatos() {
 
 function editar(id) {
   const item = datos.find(d => d.id == id);
+
   document.getElementById('id').value = item.id;
   document.getElementById('nombres').value = item.nombres;
   document.getElementById('apellidos').value = item.apellidos;
@@ -158,10 +186,12 @@ function editar(id) {
 }
 
 function eliminar(id) {
-  datos = datos.filter(d => d.id != id);
-  mostrarDatos();
+  if (confirm("¿Eliminar este empleado?")) {
+    datos = datos.filter(d => d.id != id);
+    localStorage.setItem("empleados", JSON.stringify(datos));
+    mostrarDatos();
+  }
 }
+
+mostrarDatos();
 </script>
-</main>
-</body>
-</html>
